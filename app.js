@@ -3,6 +3,7 @@ const app = express();
 
 const request = require('request');
 const path = require('path');
+const database = require('./db/database.js');
 
 /* Untracked file thats stores API authentication information */
 const { SHOPIFY } = require('./config/auth.js');
