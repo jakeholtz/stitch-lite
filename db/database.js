@@ -1,5 +1,6 @@
 const mysql = require('mysql')
 const { DATABASE } = require('../config/auth.js')
+const baseQuery = 'USE stitch_lite;';
 
 function createConnection() {
   return mysql.createConnection({
@@ -17,13 +18,27 @@ const initiateDB =
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     variant VARCHAR(255) NOT NULL,
-    SKU VARCHAR(32) NOT NULL,
-    quantity INT NOT NULL
+    sku VARCHAR(32) NOT NULL,
+    quantity INT NOT NULL,
+    updated_at TIMESTAMP
   );`;
 
-const selectProducts = 'USE stitch_lite; SELECT * FROM products'
+const selectProducts = `${baseQuery} SELECT * FROM products`
 
-module.exports = { createConnection, initiateDB, selectProducts };
+const insertProducts = (data) => {
+  let query = baseQuery;
+  data.forEach(row => {
+    let { name, variant, quantity, sku } = row;
+    query +=
+     `INSERT INTO products (name, variant, sku, quantity)
+      VALUES ('${name}', '${variant}', '${sku}', '${quantity}'); `
+  })
+  return query;
+}
+  
+
+
+module.exports = { createConnection, initiateDB, selectProducts, insertProducts };
 
 
 
