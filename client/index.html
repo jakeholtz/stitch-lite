@@ -4,8 +4,9 @@
     <title>Stitch Lite</title>
     <link rel="stylesheet" type="text/css" href="/styles.css">
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular.min.js"></script>
+    <script src="./index.js"></script>
   </head>
-  <body ng-app="">
+  <body ng-app="stitchLite" ng-controller="ProductsController">
     <h1>Stitch Lite</h1>
     <h3>Stitch Lite Products</h3>
     <table>
@@ -15,11 +16,11 @@
         <th>SKU</th>
         <th>Quantity</th>
       </tr>
-      <tr>
-        <td>A</td>
-        <td>B</td>
-        <td>C</td>
-        <td>D</td>
+      <tr ng-repeat="product in products">
+        <td> {{ product.name }} </td>
+        <td> {{ product.variant }} </td>
+        <td> {{ product.SKU }} </td>
+        <td> {{ product.quantity }} </td>
       </tr>
     </table>
     <footer> Built 2009 Jake Holtz </footer>

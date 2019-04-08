@@ -1,27 +1,29 @@
-const express = require("express");
-const app = express();
 const mysql = require('mysql')
-const initiateSeedData = require("./seed.js");
+const { DATABASE } = require('../config/auth.js')
 
-const connection = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  multipleStatements: true
-});
-
-connection.connect((err) => {
-  if (err) throw err;
-  console.log("Connected TO MYSQL!");
-
-  /* Initiate seed data (databases and table) if doesn't exist */
-  connection.query(initiateSeedData, function (err, result) {
-    if (err) throw err;
+function createConnection() {
+  return mysql.createConnection({
+    host: DATABASE.HOST,
+    user: DATABASE.USERNAME,
+    password: DATABASE.PASSWORD,
+    multipleStatements: true
   });
+}
 
-});
+const initiateDB =
+ `CREATE DATABASE IF NOT EXISTS stitch_lite;
+  USE stitch_lite;
+  CREATE TABLE IF NOT EXISTS products (
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    variant VARCHAR(255) NOT NULL,
+    SKU VARCHAR(32) NOT NULL,
+    quantity INT NOT NULL
+  );`;
 
-module.exports.connection = connection;
+const selectProducts = 'USE stitch_lite; SELECT * FROM products'
+
+module.exports = { createConnection, initiateDB, selectProducts };
 
 
 

@@ -3,7 +3,7 @@ const app = express();
 
 const request = require('request');
 const path = require('path');
-const database = require('./db/database.js');
+const db = require('./db/database.js');
 
 /* Untracked file thats stores API authentication information */
 const { SHOPIFY } = require('./config/auth.js');
@@ -12,8 +12,30 @@ const { SHOPIFY } = require('./config/auth.js');
 app.use(express.static('client'));
 app.use('/client', express.static(__dirname + '/client'));
 
+/* Send initial HTML */
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+/* Get Products From DB and send to AngularJS FE */
+app.get('/products', (req, res) => {
+  const { createConnection, initiateDB, selectProducts } = db;
+  const connection = createConnection();
+
+  connection.connect((err) => {
+    if (err) throw err;
+
+    /* Initiate seed data (databases and table) if doesn't exist */
+    connection.query(initiateDB, (err, result) => { if (err) throw err; });
+
+    /* Get products */
+    connection.query(selectProducts, function (err, result) {
+      if (err) throw err;
+      const [request, data] = result;
+      res.send(data);
+    });
+
+  });
 });
 
 /* Gets List of Items from Shopify */
